@@ -33,10 +33,9 @@
         {
             float4 vertex;
 
-            float2 uv_DistortTex;
-            float2 distortUV;
-            float2 distortUV2;
-            
+            float2 uv_DistortTex;     
+            float4 distortUV;
+
             float3 worldPos;
             float4 screenPos;
             
@@ -64,26 +63,25 @@
 
             o.vertex = UnityObjectToClipPos(v.vertex);
             o.screenPos = ComputeScreenPos(o.vertex);
+            o.grabUV = ComputeGrabScreenPos(o.vertex);
 
             o.screenPos.y = 1 - o.screenPos.y;
 
-            o.depth = -UnityObjectToViewPos(v.vertex).z * 1.0;
+            o.depth = -mul(UNITY_MATRIX_MV, v.vertex).z * 1.0;
 
-            o.distortUV = TRANSFORM_TEX(v.texcoord, _DistortTex);
+            o.distortUV.xy = TRANSFORM_TEX(v.texcoord, _DistortTex);
             o.distortUV.y += _DistortScrollSpeed * _Time.x;
 
-            o.distortUV2 = TRANSFORM_TEX(v.texcoord, _DistortTex);
-            o.distortUV2.x += _DistortScrollSpeed * _Time.x;
-
-            o.grabUV = ComputeGrabScreenPos(o.vertex);
+            o.distortUV.zw = TRANSFORM_TEX(v.texcoord, _DistortTex);
+            o.distortUV.w += _DistortScrollSpeed * _Time.x;
         }
 
         void surf (Input IN, inout SurfaceOutput o)
         {
-            float2 distort = UnpackNormal(tex2D(_DistortTex, IN.distortUV)).xy;
+            float2 distort = UnpackNormal(tex2D(_DistortTex, IN.distortUV.xy)).xy;
             distort *= _DistortAmount / 100;
 
-            float2 distort2 = UnpackNormal(tex2D(_DistortTex, IN.distortUV2)).xy;
+            float2 distort2 = UnpackNormal(tex2D(_DistortTex, IN.distortUV.zw)).xy;
             distort2 *= _DistortAmount / 100;
 
             distort += distort2;
@@ -103,10 +101,10 @@
 
             IN.grabUV.xy += distort * IN.grabUV;
 
-            float4 distortUVTing = IN.screenPos;
-            distortUVTing.xy += distort * IN.screenPos;
+            float4 distortUVTing = IN.grabUV;
+            distortUVTing.xy += distort * IN.grabUV;
 
-            fixed4 grabPassSample = tex2Dproj (_GrabTexture, distortUVTing);
+            fixed4 grabPassSample = tex2Dproj (_GrabTexture, UNITY_PROJ_COORD(distortUVTing));
             
             fixed4 col = fixed4(lerp(grabPassSample, interCol, pow(intersect, 4)));
 
