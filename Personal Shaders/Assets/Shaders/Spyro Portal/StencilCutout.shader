@@ -6,7 +6,7 @@
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "Queue" = "Geometry-2" }
+        Tags { "RenderType"="Opaque" "Queue" = "Geometry-3" }
         ColorMask 0
         ZWrite Off
 

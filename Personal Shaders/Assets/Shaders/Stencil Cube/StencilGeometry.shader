@@ -1,4 +1,4 @@
-﻿Shader "Custom/StencilGeometry"
+﻿Shader "DP/Stencil Cube/StencilGeometry"
 {
     Properties
     {

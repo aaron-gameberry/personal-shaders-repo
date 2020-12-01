@@ -6,7 +6,7 @@
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "Queue"="Geometry-1" }
+        Tags { "RenderType"="Opaque" "Queue"="Geometry-2" }
         GrabPass{"_GrabTexture"}
         ColorMask 0
         ZWrite Off
