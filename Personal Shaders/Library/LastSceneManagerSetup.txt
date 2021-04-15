@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Scenes/Cracked Ice.unity
+- path: Assets/Scenes/Portal Inspired.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0
